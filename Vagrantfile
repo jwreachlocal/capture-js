@@ -77,10 +77,12 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   sudo apt-get update
-  #   sudo apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+  #  sudo apt-get upgrade -y
+    sudo apt-get install -y libsqlite3-dev # required for sqlite3 gem
+  #  sudo apt-get install -y apache2
+  SHELL
   config.vm.provision :shell, :path => "script/bootstrap_puppet.sh"
   config.vm.provision "puppet" do |puppet|
     puppet.facter = {
@@ -122,15 +124,15 @@ Vagrant.configure(2) do |config|
   # into the VM and execute things. By default, each of these scripts calls db_backup
   # to create backups of all current databases. This can be overridden with custom
   # scripting. See the individual files in config/homebin/ for details.
-  if defined? VagrantPlugins::Triggers
-    config.trigger.before :halt, :stdout => true do
-      run "vagrant ssh -c 'vagrant_halt'"
-    end
-    config.trigger.before :suspend, :stdout => true do
-      run "vagrant ssh -c 'vagrant_suspend'"
-    end
-    config.trigger.before :destroy, :stdout => true do
-      run "vagrant ssh -c 'vagrant_destroy'"
-    end
-  end
+  # if defined? VagrantPlugins::Triggers
+  #  config.trigger.before :halt, :stdout => true do
+  #    run "vagrant ssh -c 'vagrant_halt'"
+  #  end
+  #  config.trigger.before :suspend, :stdout => true do
+  #    run "vagrant ssh -c 'vagrant_suspend'"
+  #  end
+  #  config.trigger.before :destroy, :stdout => true do
+  #    run "vagrant ssh -c 'vagrant_destroy'"
+  #  end
+  # end
 end
